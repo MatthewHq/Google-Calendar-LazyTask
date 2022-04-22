@@ -54,7 +54,7 @@ def main():
                 # print("f:",f.read())
                 fread = f.read().replace("  \n", "")
                 # dont forget to repladce time format " \n"
-                arguments = fread.split(' ')
+                arguments = fread.split(', ')
                 targetTime = datetime.datetime.utcnow(
                 )-datetime.timedelta(int(arguments[0]))
                 targetTimeFormatted = targetTime.date().isoformat()  # 'Z' indicates UTC time
