@@ -8,9 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 
-startAddress='Tracker'+os.sep+'start.txt'
-updateAddress='Tracker'+os.sep+'trackerUpdate.txt'
-
+lazyTaskDat = 'Tracker'+os.sep+'lazyTaskUpdate.txt'
 
 
 # If modifying these scopes, delete the file token.pickle.
@@ -50,124 +48,94 @@ def main():
             # print("=======\n"+str(calendar_list_entry)+"=======\n")
             # print(calendar_list_entry['summary'])
             # Call the Calendar API
-            now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
 
             # print(calendar_list_entry['summary'] == "Z LOG")
-            if calendar_list_entry['summary'] == "Z LOG":
-                
-                f = open(updateAddress, "r")
-                fread=f.read().replace("  \n","")
-                arguments=fread.split(', ') # dont forget to repladce time format " \n"
+            if calendar_list_entry['summary'] == "Z Daily Life $T":
+
+                f = open(lazyTaskDat, "r")
+                # print("f:",f.read())
+                fread = f.read().replace("  \n", "")
+                print("fread:", fread)
+                # dont forget to repladce time format " \n"
+                arguments = fread.split(' ')
                 print(arguments)
-                category=''
-                summary=''
-                if len(arguments)==3:
-                    intent=arguments[0]
-                    summary=arguments[1]
-                    time=str(arguments[2])
-                elif len(arguments)==4:
-                    intent=arguments[0]
-                    summary=arguments[1]
-                    category=arguments[2]
-                    time=str(arguments[3])
-                elif len(arguments)==2:
-                    intent=arguments[0]
-                    time=str(arguments[1])
-                print("\n |"+str(intent)+"| INTENT")
+                targetTime = datetime.datetime.utcnow(
+                )-datetime.timedelta(int(arguments[0]))
+                # targetTimeFormatted = targetTime.isoformat() + 'Z'  # 'Z' indicates UTC time
+                targetTimeFormatted = targetTime.date().isoformat()  # 'Z' indicates UTC time
+                print(targetTime)
+                print(targetTimeFormatted)
 
-                if str(intent).lower()=="finish":
-                    print("\n FINISHING")
-                    endSummary=''
-                    if summary:
-                        endSummary=summary
+                category = ''
+                summaryPreq = ""
+                if int(arguments[0]) < 10:
+                    summaryPreq += "0"
+                summaryPreq += arguments[0]
+                summary = summaryPreq+" "+arguments[1]+" zzz"
+                # if len(arguments)==3:
+                #     intent=arguments[0]
+                #     summary=arguments[1]
+                #     time=str(arguments[2])
+                # elif len(arguments)==4:
+                #     intent=arguments[0]
+                #     summary=arguments[1]
+                #     category=arguments[2]
+                #     time=str(arguments[3])
+                # elif len(arguments)==2:
+                #     intent=arguments[0]
+                #     time=str(arguments[1])
+                # print("\n |"+str(intent)+"| INTENT")
 
-                    startFile = open(startAddress, "r")
-                    startContent=startFile.read()
-                    startArguments=startContent.split(', ') # dont forget to repladce time format " \n"
-                    print(startArguments)
-                    startFile.close()
-                    
+                # if str(intent).lower()=="finish":
+                # endSummary=''
+                # if summary:
+                #     endSummary=summary
 
-                    
-                    addtime=fread
-                    search=re.sub('((\d*-)(\d*-)(\d*)T(\d*):)(\d*)(:(\d*))', "\g<6>", addtime)
-                    splitHolder=search.split(', ')
-                    search=splitHolder
-                    search=search[len(search)-1]
-                    search=int(search)
-                    print(search)
-                    if search!=59:
-                        search=search+1
-                        print(search)
-                    if (search >9):
-                        searchFormatted=str(search)
-                    else:
-                        searchFormatted="0"+str(search)
-                    print(search)
-                    addedString=re.sub('((\d*-)(\d*-)(\d*)T(\d*):)(\d*)(:(\d*))', "\g<1>"+searchFormatted+"\g<7>", addtime)
+                # addtime=fread
+                # search=re.sub('((\d*-)(\d*-)(\d*)T(\d*):)(\d*)(:(\d*))', "\g<6>", addtime)
+                # splitHolder=search.split(', ')
+                # search=splitHolder
+                # search=search[len(search)-1]
+                # search=int(search)
+                # print(search)
+                # if search!=59:
+                #     search=search+1
+                #     print(search)
+                # if (search >9):
+                #     searchFormatted=str(search)
+                # else:
+                #     searchFormatted="0"+str(search)
+                # print(search)
+                # addedString=re.sub('((\d*-)(\d*-)(\d*)T(\d*):)(\d*)(:(\d*))', "\g<1>"+searchFormatted+"\g<7>", addtime)
 
-                    if not endSummary:
-                        splitHolder[len(splitHolder)-1]=addedString.lower().replace("finish","unknown")
-                        unknownSummary=", ".join(splitHolder)
-                        addedString=unknownSummary
+                # if not endSummary:
+                #     splitHolder[len(splitHolder)-1]=addedString.lower().replace("finish","unknown")
+                #     unknownSummary=", ".join(splitHolder)
+                #     addedString=unknownSummary
 
-                    fx = open(startAddress, "w")
-                    print(addedString)
-                    fx.write(addedString)
+                id = calendar_list_entry['id']
+                event = {}
+                # if endSummary:
+                # event['summary']=endSummary
+                # else:
+                event['summary'] = summary
 
-                    
-                    if len(startArguments)==3:
-                        intent=startArguments[0]
-                        summary=startArguments[1]
-                        startTime=str(startArguments[2])
-                    elif len(startArguments)==4:
-                        intent=startArguments[0]
-                        summary=startArguments[1]
-                        if category=='':
-                            category=startArguments[2]
-                        startTime=str(startArguments[3])
-                    elif len(arguments)==2:
-                        intent=arguments[0]
-                        startTime=str(startArguments[1])
+                event['start'] = {
+                    'date': targetTimeFormatted,
+                    'timeZone': 'America/Los_Angeles',
+                }
+                event['end'] = {
+                    'date': targetTimeFormatted,
+                    'timeZone': 'America/Los_Angeles',
+                }
+                # if category:
+                # event['description']=category
+                print(str(event)+"AAAA")
+                event = service.events().insert(calendarId=id, body=event).execute()
 
-                    id=calendar_list_entry['id']
-                    event={}
-                    if endSummary:
-                        event['summary']=endSummary
-                    else:
-                        event['summary']=summary
-                    
-                    event['start']={
-                        'dateTime': startTime,
-                        'timeZone': 'America/Los_Angeles',
-                    }
-                    event['end']={
-                        'dateTime': time,
-                        'timeZone': 'America/Los_Angeles',
-                    }
-                    if category:
-                        event['description']=category
-                    print(str(event)+"AAAA")
-                    event = service.events().insert(calendarId=id, body=event).execute()
-                elif str(intent).lower()=="start":
-                    fx = open(startAddress, "w")
-                    print(fread)
-                    fx.write(fread)
-                
-         
         page_token = calendar_list.get('nextPageToken')
-
-        
-
-            
-
-
-
         if not page_token:
             break
-
-
-    
 
 
 if __name__ == '__main__':
