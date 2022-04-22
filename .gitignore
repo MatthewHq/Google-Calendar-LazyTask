@@ -1,5 +1,6 @@
 credentials.json
 token.pickle
+lazyTaskUpdate.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
