@@ -1,9 +1,10 @@
-# Google-Calendar-Logger
+# Google-Calendar-LazyTask
 
 
 "Quick and Dirty" development speed, no refinement planned from the start.
 
+Manually forked from my [Google-Calendar-Logger-Recap](https://github.com/MatthewHoque/Google-Calendar-Logger-Recap) repo
 
-Creates calendar events representing a logged activity once setup with iPhone shortcuts and Windows OpenSSH in combination with a few batch files and task scheduler.
+To work in parallel with my Google-Calendar-Mover for creating quick "Lazy Tasks" on the go, ready to be organized later.
 
-[![click](https://github.com/MatthewHoque/Google-Calendar-Mover/blob/main/readMeSources/googlecalendarmover.png?raw=true)](https://youtu.be/rCv-Rt_5bC4?t=552)
+**Similar to the logger I can now use Siri Shortcuts to QUICKLY add tasks to my custom calendar task system**
