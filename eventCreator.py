@@ -63,15 +63,17 @@ def main():
                 category = ''
                 summaryPreq = ""
                 summaryPost = ""
+                mid = ""
 
                 if 0 < int(arguments[0]) < 10:
                     summaryPreq += "0"
                 if int(arguments[0]) != 0:
                     summaryPreq += arguments[0]
-                if int(arguments[0]) != 0:
                     summaryPost = " zzz"
+                    mid += " "
+                mid += arguments[1]
 
-                summary = summaryPreq+" "+arguments[1]+summaryPost
+                summary = summaryPreq+mid+summaryPost
 
                 id = calendar_list_entry['id']
                 event = {}
